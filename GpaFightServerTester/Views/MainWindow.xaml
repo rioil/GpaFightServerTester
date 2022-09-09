@@ -35,7 +35,24 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button Grid.Row="0" Content="Run Test" Command="{Binding RunTestCommand}"/>
+        <StackPanel Grid.Row="0">
+            <Button Content="Run Test" Command="{Binding RunTestCommand}"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Text="{Binding Username}" Width="200"/>
+                <TextBox Text="{Binding Password}" Width="200"/>
+                <Button Content="Create User" Command="{Binding CreateUserCommand}"/>
+                <Button Content="Login" Command="{Binding LoginCommand}"/>
+                <Button Content="Delte User" Command="{Binding DeleteUserCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="gpa" Width="200"/>
+                <Button Content="Update Grade" Command="{Binding UpdateGradeCommand}" CommandParameter="{Binding Text, ElementName=gpa}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Get Whole GPA Ranking"/>
+                <Button Content="Get Affiliation GPA Ranking"/>
+            </StackPanel>
+        </StackPanel>
         <ListBox Grid.Row="1" ItemsSource="{Binding Logs}"/>
     </Grid>
 </Window>

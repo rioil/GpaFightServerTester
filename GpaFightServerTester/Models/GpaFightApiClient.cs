@@ -16,6 +16,8 @@ namespace GpaFightServerTester.Models
 
         public string? Token { get; set; }
 
+        public User? CurrentUser { get; set; }
+
         public async Task<User?> CreateUser(User user)
         {
             var result = await CreateUserInternal(user);
@@ -23,11 +25,10 @@ namespace GpaFightServerTester.Models
             return result.IsSuccessful ? result.Data : null;
         }
 
-        public async Task<string?> CreateUserRaw(User user)
+        public async Task<RestResponse?> CreateUserRaw(User user)
         {
             var result = await CreateUserInternal(user);
-
-            return result.Content;
+            return result;
         }
 
         public async Task<User?> GetUser(string id)
@@ -37,11 +38,11 @@ namespace GpaFightServerTester.Models
             return result.IsSuccessful ? result.Data : null;
         }
 
-        public async Task<string?> GetUserRaw(string id)
+        public async Task<RestResponse?> GetUserRaw(string id)
         {
             var result = await GetUserInternal(id);
 
-            return result.Content;
+            return result;
         }
 
         public async Task<bool> UpdateUser(User user)
@@ -51,11 +52,35 @@ namespace GpaFightServerTester.Models
             return result.IsSuccessful;
         }
 
-        public async Task<string?> UpdateUserRaw(User user)
+        public async Task<RestResponse?> UpdateUserRaw(User user)
         {
             var result = await UpdateUserInternal(user);
 
-            return result.Content;
+            return result;
+        }
+
+        public async Task<bool> DeleteUser(User user)
+        {
+            var result = await DeleteUserInternal(user);
+
+            return result.IsSuccessful;
+        }
+
+        public async Task<RestResponse?> DeleteUserRaw(User user)
+        {
+            return await DeleteUserInternal(user);
+        }
+
+        public async Task<bool> GetCurrentUser()
+        {
+            await GetCurrentUserInternal();
+
+            return CurrentUser is not null;
+        }
+
+        public async Task<RestResponse<User>?> GetCurrentUserRaw()
+        {
+            return await GetCurrentUserInternal();
         }
 
         public async Task<bool> Login(LoginCredential loginCredential)
@@ -91,7 +116,7 @@ namespace GpaFightServerTester.Models
         public async Task<Ranking?> GetWholeRanking()
         {
             var result = await GetWholeRankingInternal();
-            
+
             return result.IsSuccessful ? result.Data : null;
         }
 
@@ -140,11 +165,38 @@ namespace GpaFightServerTester.Models
 
         private async Task<RestResponse> UpdateUserInternal(User user)
         {
-            var request = new RestRequest($"users/{user.Username}");
+            if (Token is null) { throw new InvalidOperationException(); }
+
+            var request = new RestRequest($"users/{user.Id}");
+            request.AddHeader("Authorization", $"Bearer {Token}");
             var serializedBody = JsonSerializer.Serialize(user, _serializerOptions);
             request.AddJsonBody(serializedBody);
 
             var result = await _restClient.ExecutePostAsync(request);
+
+            return result;
+        }
+
+        private async Task<RestResponse> DeleteUserInternal(User user)
+        {
+            if (Token is null) { throw new InvalidOperationException(); }
+
+            var request = new RestRequest($"users/{user.Id}", Method.Delete);
+            request.AddHeader("Authorization", $"Bearer {Token}");
+            var result = await _restClient.ExecuteAsync(request);
+
+            return result;
+        }
+
+        private async Task<RestResponse<User>?> GetCurrentUserInternal()
+        {
+            if (Token is null) { throw new InvalidOperationException(); }
+
+            var request = new RestRequest("users/current");
+            request.AddHeader("Authorization", $"Bearer {Token}");
+            var result = await _restClient.ExecuteGetAsync<User>(request);
+
+            CurrentUser = result?.Data;
 
             return result;
         }
