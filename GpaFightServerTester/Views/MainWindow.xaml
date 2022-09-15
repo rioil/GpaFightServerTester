@@ -49,8 +49,8 @@
                 <Button Content="Update Grade" Command="{Binding UpdateGradeCommand}" CommandParameter="{Binding Text, ElementName=gpa}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button Content="Get Whole GPA Ranking"/>
-                <Button Content="Get Affiliation GPA Ranking"/>
+                <Button Content="Get Whole GPA Ranking" Command="{Binding GetWholeRankingCommand}"/>
+                <Button Content="Get Affiliation GPA Ranking" Command="{Binding GetAffiliationRankingCommand}"/>
             </StackPanel>
         </StackPanel>
         <ListBox Grid.Row="1" ItemsSource="{Binding Logs}"/>

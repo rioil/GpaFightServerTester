@@ -202,6 +202,41 @@ namespace GpaFightServerTester.ViewModels
         private ListenerCommand<string>? _updateGradeCommand;
         public ListenerCommand<string> UpdateGradeCommand => _updateGradeCommand ??= new ListenerCommand<string>(UpdateGrade);
 
+
+        public async void GetWholeRanking()
+        {
+            var result = await _client.GetWholeRankingRaw();
+            if (result.IsSuccessful)
+            {
+                AddLog("全体ランキング取得成功");
+                AddLog(result.Data!.ToString());
+            }
+            else
+            {
+                AddLog("全体ランキング取得失敗");
+            }
+        }
+        private ViewModelCommand? _getWholeRankingCommand;
+        public ViewModelCommand GetWholeRankingCommand => _getWholeRankingCommand ??= new ViewModelCommand(GetWholeRanking);
+
+
+        public async void GetAffiliationRanking()
+        {
+            var result = await _client.GetAffiliationRankingRaw();
+            if (result.IsSuccessful)
+            {
+                AddLog("同一所属ランキング取得成功");
+                AddLog(result.Data!.ToString());
+            }
+            else
+            {
+                AddLog("同一所属ランキング取得失敗");
+            }
+        }
+        private ViewModelCommand? _getAffiliationRankingCommand;
+        public ViewModelCommand GetAffiliationRankingCommand => _getAffiliationRankingCommand ??= new ViewModelCommand(GetAffiliationRanking);
+
+
         private void AddLog(string? message)
         {
             Logs.Add($"[{DateTime.Now}] {message}");

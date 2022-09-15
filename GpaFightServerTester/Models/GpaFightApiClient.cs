@@ -113,30 +113,30 @@ namespace GpaFightServerTester.Models
             return result.IsSuccessful;
         }
 
-        public async Task<Ranking?> GetWholeRanking()
+        public async Task<RankingItem[]?> GetWholeRanking()
         {
             var result = await GetWholeRankingInternal();
 
             return result.IsSuccessful ? result.Data : null;
         }
 
-        public async Task<string?> GetWholeRankingRaw()
+        public async Task<RestResponse<RankingItem[]>> GetWholeRankingRaw()
         {
             var result = await GetWholeRankingInternal();
-            return result.Content;
+            return result;
         }
 
-        public async Task<Ranking?> GetAffiliationRanking()
+        public async Task<RankingItem[]?> GetAffiliationRanking()
         {
             var result = await GetAffiliationRankingInternal();
 
             return result.IsSuccessful ? result.Data : null;
         }
 
-        public async Task<string?> GetAffiliationRankingRaw()
+        public async Task<RestResponse<RankingItem[]>> GetAffiliationRankingRaw()
         {
             var result = await GetAffiliationRankingInternal();
-            return result.Content;
+            return result;
         }
 
         #region private function
@@ -201,24 +201,24 @@ namespace GpaFightServerTester.Models
             return result;
         }
 
-        private async Task<RestResponse<Ranking>> GetWholeRankingInternal()
+        private async Task<RestResponse<RankingItem[]>> GetWholeRankingInternal()
         {
             if (Token is null) { throw new InvalidOperationException(); }
 
             var request = new RestRequest("rankings/gpa/whole");
             request.AddHeader("Authorization", $"Bearer {Token}");
 
-            return await _restClient.ExecuteGetAsync<Ranking>(request);
+            return await _restClient.ExecuteGetAsync<RankingItem[]>(request);
         }
 
-        private async Task<RestResponse<Ranking>> GetAffiliationRankingInternal()
+        private async Task<RestResponse<RankingItem[]>> GetAffiliationRankingInternal()
         {
             if (Token is null) { throw new InvalidOperationException(); }
 
             var request = new RestRequest("rankings/gpa/affiliation");
             request.AddHeader("Authorization", $"Bearer {Token}");
 
-            return await _restClient.ExecuteGetAsync<Ranking>(request);
+            return await _restClient.ExecuteGetAsync<RankingItem[]>(request);
         }
         #endregion
     }
