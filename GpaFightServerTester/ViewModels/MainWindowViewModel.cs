@@ -165,6 +165,34 @@ namespace GpaFightServerTester.ViewModels
         private ViewModelCommand? _loginCommand;
         public ViewModelCommand LoginCommand => _loginCommand ??= new ViewModelCommand(Login);
 
+        public async void UpdateUser()
+        {
+            var currentUser = _client.CurrentUser;
+            if (currentUser is null)
+            {
+                AddLog("ログインしてください");
+                return;
+            }
+
+            var user = new User(Username, currentUser.YearOfEntrance, currentUser.Faculty, currentUser.Department, Password, currentUser.Id);
+            var result = await _client.UpdateUserRaw(user);
+            if (result?.IsSuccessful ?? false)
+            {
+                AddLog("ユーザー情報更新成功");
+            }
+            else
+            {
+                AddLog("ユーザー情報更新失敗");
+            }
+
+            if (result is not null)
+            {
+                AddLog(result.Content);
+            }
+        }
+        private ViewModelCommand? _updateUserCommand;
+        public ViewModelCommand UpdateUserCommand => _updateUserCommand ??= new ViewModelCommand(UpdateUser);
+
         /// <summary>
         /// ユーザー削除
         /// </summary>

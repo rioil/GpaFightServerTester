@@ -7,7 +7,7 @@
     xmlns:v="clr-namespace:GpaFightServerTester.Views"
     xmlns:vm="clr-namespace:GpaFightServerTester.ViewModels"
     Title="MainWindow"
-    Width="525"
+    Width="700"
     Height="350">
 
     <Window.DataContext>
@@ -42,6 +42,7 @@
                 <TextBox Text="{Binding Password}" Width="200"/>
                 <Button Content="Create User" Command="{Binding CreateUserCommand}"/>
                 <Button Content="Login" Command="{Binding LoginCommand}"/>
+                <Button Content="Update User" Command="{Binding UpdateUserCommand}"/>
                 <Button Content="Delte User" Command="{Binding DeleteUserCommand}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
